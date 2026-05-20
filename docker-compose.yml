@@ -1,0 +1,132 @@
+﻿services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: commerce
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d commerce"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  catalog-service:
+    build:
+      context: ./services/catalog
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/commerce
+      DB_SCHEMA: catalog
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3001:3001"
+
+  cart-service:
+    build:
+      context: ./services/cart
+    environment:
+      PORT: 3002
+      REDIS_URL: redis://redis:6379
+      CATALOG_SERVICE_URL: http://catalog-service:3001
+    depends_on:
+      redis:
+        condition: service_healthy
+      catalog-service:
+        condition: service_started
+    ports:
+      - "3002:3002"
+
+  payment-service:
+    build:
+      context: ./services/payment
+    environment:
+      PORT: 3004
+    ports:
+      - "3004:3004"
+
+  notification-service:
+    build:
+      context: ./services/notification
+    environment:
+      PORT: 3005
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/commerce
+      DB_SCHEMA: notification
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3005:3005"
+
+  order-service:
+    build:
+      context: ./services/order
+    environment:
+      PORT: 3003
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/commerce
+      DB_SCHEMA: orders
+      CART_SERVICE_URL: http://cart-service:3002
+      PAYMENT_SERVICE_URL: http://payment-service:3004
+      NOTIFICATION_SERVICE_URL: http://notification-service:3005
+    depends_on:
+      postgres:
+        condition: service_healthy
+      cart-service:
+        condition: service_started
+      payment-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
+    ports:
+      - "3003:3003"
+
+  gateway-service:
+    build:
+      context: ./services/gateway
+    environment:
+      PORT: 8080
+      CATALOG_SERVICE_URL: http://catalog-service:3001
+      CART_SERVICE_URL: http://cart-service:3002
+      ORDER_SERVICE_URL: http://order-service:3003
+      NOTIFICATION_SERVICE_URL: http://notification-service:3005
+    depends_on:
+      catalog-service:
+        condition: service_started
+      cart-service:
+        condition: service_started
+      order-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./apps/frontend
+    environment:
+      API_BASE_URL: http://gateway-service:8080
+    depends_on:
+      gateway-service:
+        condition: service_started
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres-data:

@@ -1,0 +1,32 @@
+﻿{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "TerraformStateAndIdentity",
+      "Effect": "Allow",
+      "Action": [
+        "s3:*",
+        "sts:GetCallerIdentity"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ClassroomInfrastructureDeploy",
+      "Effect": "Allow",
+      "Action": [
+        "apigateway:*",
+        "ec2:*",
+        "ecr:*",
+        "ecs:*",
+        "elasticache:*",
+        "elasticloadbalancing:*",
+        "iam:*",
+        "logs:*",
+        "rds:*",
+        "route53:*",
+        "servicediscovery:*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

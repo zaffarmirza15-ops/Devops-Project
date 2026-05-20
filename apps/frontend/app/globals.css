@@ -1,0 +1,354 @@
+﻿:root {
+  --bg: #f4efe7;
+  --bg-alt: #efe5d4;
+  --surface: rgba(255, 252, 246, 0.92);
+  --surface-strong: #fffdf8;
+  --text: #1f2933;
+  --muted: #5f6b76;
+  --line: rgba(31, 41, 51, 0.12);
+  --accent: #0d6e6e;
+  --accent-strong: #134e4a;
+  --warm: #d97706;
+  --shadow: 0 20px 45px rgba(31, 41, 51, 0.08);
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+  --font-heading: "Trebuchet MS", "Avenir Next", sans-serif;
+  --font-body: "Segoe UI", "Gill Sans", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(13, 110, 110, 0.16), transparent 24%),
+    radial-gradient(circle at top right, rgba(217, 119, 6, 0.16), transparent 22%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.page-shell {
+  width: min(1220px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 56px;
+}
+
+.hero-card,
+.panel,
+.info-card {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+.hero-card {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 24px;
+  padding: 28px;
+  margin-bottom: 22px;
+}
+
+.eyebrow,
+.section-label {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+}
+
+h1 {
+  font-size: clamp(2.3rem, 5vw, 4.4rem);
+  line-height: 0.96;
+  max-width: 10ch;
+}
+
+h2 {
+  font-size: 1.45rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+}
+
+.hero-copy,
+.muted,
+.empty-copy {
+  color: var(--muted);
+}
+
+.hero-copy {
+  margin: 16px 0 0;
+  max-width: 58ch;
+  line-height: 1.65;
+}
+
+.status-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(160deg, rgba(13, 110, 110, 0.08), rgba(217, 119, 6, 0.08)),
+    var(--surface-strong);
+  border: 1px solid rgba(13, 110, 110, 0.14);
+}
+
+.status-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--accent-strong);
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(31, 41, 51, 0.06);
+  font-size: 0.9rem;
+}
+
+.architecture-grid,
+.bottom-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.bottom-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.info-card {
+  padding: 18px;
+  min-height: 132px;
+}
+
+.info-card p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1.55fr 0.95fr;
+  gap: 22px;
+  margin-bottom: 22px;
+}
+
+.stack {
+  display: grid;
+  gap: 22px;
+}
+
+.panel {
+  padding: 24px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.secondary-button,
+.primary-button,
+.product-card button,
+.cart-item button {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 16px;
+  transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
+}
+
+.secondary-button {
+  background: rgba(13, 110, 110, 0.08);
+  color: var(--accent-strong);
+}
+
+.primary-button,
+.product-card button {
+  background: var(--accent);
+  color: white;
+}
+
+.cart-item button {
+  background: rgba(217, 119, 6, 0.12);
+  color: #9a3412;
+}
+
+.secondary-button:hover,
+.primary-button:hover,
+.product-card button:hover,
+.cart-item button:hover {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.product-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+}
+
+.product-image {
+  display: grid;
+  place-items: center;
+  min-height: 82px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(160deg, rgba(13, 110, 110, 0.12), rgba(217, 119, 6, 0.12));
+  font-size: 2rem;
+}
+
+.product-meta,
+.summary-box,
+.timeline-item,
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cart-list,
+.timeline {
+  display: grid;
+  gap: 14px;
+}
+
+.cart-item,
+.timeline-item {
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+}
+
+.summary-box {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(13, 110, 110, 0.08);
+}
+
+.form-grid {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.form-grid label {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.form-grid input,
+.form-grid select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(31, 41, 51, 0.16);
+  background: var(--surface-strong);
+}
+
+.timeline-meta {
+  text-align: right;
+}
+
+@media (max-width: 1080px) {
+  .hero-card,
+  .content-grid,
+  .bottom-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .architecture-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .page-shell {
+    width: min(100% - 20px, 1220px);
+    padding: 18px 0 36px;
+  }
+
+  .hero-card,
+  .panel {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .architecture-grid,
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-header,
+  .product-meta,
+  .summary-box,
+  .timeline-item,
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .timeline-meta {
+    text-align: left;
+  }
+}

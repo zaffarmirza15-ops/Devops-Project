@@ -1,0 +1,16 @@
+﻿node_modules
+.next
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate
+*.tfstate.*
+.env
+.DS_Store
+dist
+coverage
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+infra/terraform/backend.hcl
+

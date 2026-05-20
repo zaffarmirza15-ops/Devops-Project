@@ -1,0 +1,90 @@
+﻿name: Bootstrap Terraform Backend
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+  TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+  AWS_ROLE_TO_ASSUME: ${{ vars.AWS_ROLE_TO_ASSUME }}
+
+jobs:
+  bootstrap:
+    name: Create Or Update Terraform State Bucket
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Validate required GitHub variables
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${TF_STATE_BUCKET}" ]]; then
+            echo "TF_STATE_BUCKET GitHub variable is required."
+            exit 1
+          fi
+
+          if [[ -z "${AWS_ROLE_TO_ASSUME}" ]]; then
+            echo "AWS_ROLE_TO_ASSUME GitHub variable is required."
+            exit 1
+          fi
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+
+      - name: Create state bucket when missing
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if aws s3api head-bucket --bucket "${TF_STATE_BUCKET}" 2>/dev/null; then
+            echo "Bucket already exists: ${TF_STATE_BUCKET}"
+            exit 0
+          fi
+
+          if [[ "${AWS_REGION}" == "us-east-1" ]]; then
+            aws s3api create-bucket --bucket "${TF_STATE_BUCKET}" --region "${AWS_REGION}"
+          else
+            aws s3api create-bucket \
+              --bucket "${TF_STATE_BUCKET}" \
+              --region "${AWS_REGION}" \
+              --create-bucket-configuration LocationConstraint="${AWS_REGION}"
+          fi
+
+      - name: Enable versioning and encryption
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          aws s3api put-bucket-versioning \
+            --bucket "${TF_STATE_BUCKET}" \
+            --versioning-configuration Status=Enabled
+
+          aws s3api put-bucket-encryption \
+            --bucket "${TF_STATE_BUCKET}" \
+            --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
+
+          aws s3api put-public-access-block \
+            --bucket "${TF_STATE_BUCKET}" \
+            --public-access-block-configuration BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
+
+      - name: Summarize backend setup
+        shell: bash
+        run: |
+          {
+            echo "## Terraform backend ready"
+            echo
+            echo "- Bucket: ${TF_STATE_BUCKET}"
+            echo "- Region: ${AWS_REGION}"
+            echo "- Versioning: enabled"
+            echo "- Encryption: AES256"
+            echo "- Public access: blocked"
+          } >> "$GITHUB_STEP_SUMMARY"
