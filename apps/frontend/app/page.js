@@ -35,6 +35,7 @@ function buildBrowserSafeId() {
 
   return Math.random().toString(36).slice(2, 10);
 }
+
 function createCartId() {
   if (typeof window === "undefined") {
     return "demo-cart";
@@ -204,19 +205,19 @@ export default function HomePage() {
       <section className="hero-card">
         <div>
           <p className="eyebrow">Next.js + Docker Compose + AWS ECS</p>
-          <h1>Ecommerce Microservices Demo for ECS Classrooms</h1>
+          <h1>Cloud-Native Cluster Orchestrator</h1>
           <p className="hero-copy">
-            This storefront keeps the code small, but the architecture real: a gateway, catalog,
-            cart, order, payment, and notification services with PostgreSQL and Redis underneath.
+            Enterprise microservices hub tracing end-to-end telemetry across isolation boundaries: 
+            Gateway, Dynamic Catalog, Session State (Redis), Ledger Core (PostgreSQL), and Event Workers.
           </p>
         </div>
         <div className="status-panel">
-          <span className="status-label">Live status</span>
+          <span className="status-label">Runtime Engine Metrics</span>
           <p>{statusMessage}</p>
           <div className="chip-row">
-            <span className="chip">Cart ID: {cartId || "initializing"}</span>
-            <span className="chip">Orders: {orders.length}</span>
-            <span className="chip">Notifications: {notifications.length}</span>
+            <span className="chip">Session: {cartId || "initializing"}</span>
+            <span className="chip">Ledger Blocks: {orders.length}</span>
+            <span className="chip">Queues: {notifications.length}</span>
           </div>
         </div>
       </section>
@@ -233,11 +234,11 @@ export default function HomePage() {
         <div className="panel">
           <div className="panel-header">
             <div>
-              <p className="section-label">Catalog Service</p>
-              <h2>Products</h2>
+              <p className="section-label">State-Managed Inventory</p>
+              <h2>Catalog Service Nodes</h2>
             </div>
             <button className="secondary-button" onClick={() => refreshDashboard(cartId)} type="button">
-              Refresh Demo Data
+              Sync Node State
             </button>
           </div>
 
@@ -247,14 +248,14 @@ export default function HomePage() {
                 <div className="product-image">{product.emoji || "📦"}</div>
                 <div>
                   <h3>{product.name}</h3>
-                  <p className="muted">{product.description}</p>
+                  <p className="muted" style={{ fontSize: "0.88rem", marginTop: "4px" }}>{product.description}</p>
                 </div>
                 <div className="product-meta">
                   <span>{product.category}</span>
                   <strong>{formatCurrency(product.price_cents)}</strong>
                 </div>
                 <button disabled={isBusy} onClick={() => addToCart(product.id)} type="button">
-                  Add To Cart
+                  Commit To Buffer
                 </button>
               </article>
             ))}
@@ -265,8 +266,8 @@ export default function HomePage() {
           <section className="panel">
             <div className="panel-header">
               <div>
-                <p className="section-label">Redis-backed Cart Service</p>
-                <h2>Cart Summary</h2>
+                <p className="section-label">In-Memory Cache Layer</p>
+                <h2>Redis Ephemeral Buffer</h2>
               </div>
             </div>
 
@@ -276,22 +277,22 @@ export default function HomePage() {
                   <div className="cart-item" key={item.productId}>
                     <div>
                       <strong>{item.name}</strong>
-                      <p className="muted">
-                        Qty {item.quantity} x {formatCurrency(item.priceCents)}
+                      <p className="muted" style={{ fontSize: "0.8rem", margin: "4px 0 0" }}>
+                        Units: {item.quantity} × {formatCurrency(item.priceCents)}
                       </p>
                     </div>
                     <button disabled={isBusy} onClick={() => removeFromCart(item.productId)} type="button">
-                      Remove
+                      Purge
                     </button>
                   </div>
                 ))
               ) : (
-                <p className="empty-copy">Your cart is empty. Add a product to trigger the service flow.</p>
+                <p className="empty-copy">Buffer state clear. Provision assets inside catalog nodes to populate telemetry.</p>
               )}
             </div>
 
             <div className="summary-box">
-              <span>Total items: {cart.summary?.itemCount || 0}</span>
+              <span style={{ fontSize: "0.9rem", color: "#94a3b8" }}>Staged Objects: {cart.summary?.itemCount || 0}</span>
               <strong>{formatCurrency(cart.summary?.totalCents || 0)}</strong>
             </div>
           </section>
@@ -299,14 +300,14 @@ export default function HomePage() {
           <section className="panel">
             <div className="panel-header">
               <div>
-                <p className="section-label">Order Orchestrator</p>
-                <h2>Checkout</h2>
+                <p className="section-label">Transactional Pipelines</p>
+                <h2>Orchestrate Dispatch</h2>
               </div>
             </div>
 
             <div className="form-grid">
               <label>
-                Name
+                Identity Name
                 <input
                   onChange={(event) =>
                     setCheckout((current) => ({ ...current, customerName: event.target.value }))
@@ -315,7 +316,7 @@ export default function HomePage() {
                 />
               </label>
               <label>
-                Email
+                Routing Destination (Email)
                 <input
                   onChange={(event) =>
                     setCheckout((current) => ({ ...current, customerEmail: event.target.value }))
@@ -324,27 +325,28 @@ export default function HomePage() {
                 />
               </label>
               <label>
-                Payment
+                Payment Pipeline Gateway
                 <select
                   onChange={(event) =>
                     setCheckout((current) => ({ ...current, paymentMethod: event.target.value }))
                   }
                   value={checkout.paymentMethod}
                 >
-                  <option value="card">Mock Card</option>
-                  <option value="bank-transfer">Mock Bank Transfer</option>
-                  <option value="fail">Force Failure</option>
+                  <option value="card">Simulated Visa Wire</option>
+                  <option value="bank-transfer">Simulated Ledger Transfer</option>
+                  <option value="fail">Force Synthetic Exception</option>
                 </select>
               </label>
             </div>
 
             <button
               className="primary-button"
+              style={{ width: "100%", marginTop: "8px" }}
               disabled={isBusy || !cart.items?.length}
               onClick={checkoutCart}
               type="button"
             >
-              Create Order
+              Execute Distributed Sync
             </button>
           </section>
         </aside>
@@ -354,8 +356,8 @@ export default function HomePage() {
         <section className="panel">
           <div className="panel-header">
             <div>
-              <p className="section-label">PostgreSQL Order Service</p>
-              <h2>Recent Orders</h2>
+              <p className="section-label">Persistent Ledger Database</p>
+              <h2>PostgreSQL Relational Tables</h2>
             </div>
           </div>
 
@@ -364,19 +366,20 @@ export default function HomePage() {
               orders.map((order) => (
                 <article className="timeline-item" key={order.id}>
                   <div>
-                    <strong>{order.id}</strong>
-                    <p className="muted">
-                      {order.customer_name} · {order.customer_email}
+                    <strong style={{ fontFamily: "monospace", color: "var(--accent)" }}>{order.id}</strong>
+                    <p className="muted" style={{ fontSize: "0.85rem", margin: "4px 0 0" }}>
+                      Ref: {order.customer_name} · {order.customer_email}
                     </p>
                   </div>
                   <div className="timeline-meta">
                     <span>{order.status}</span>
-                    <strong>{formatCurrency(order.total_cents)}</strong>
+                    <br />
+                    <strong style={{ color: "#ffffff" }}>{formatCurrency(order.total_cents)}</strong>
                   </div>
                 </article>
               ))
             ) : (
-              <p className="empty-copy">No orders yet. Checkout will create rows in PostgreSQL.</p>
+              <p className="empty-copy">No active records written to PostgreSQL cluster.</p>
             )}
           </div>
         </section>
@@ -384,27 +387,28 @@ export default function HomePage() {
         <section className="panel">
           <div className="panel-header">
             <div>
-              <p className="section-label">Notification Service</p>
-              <h2>Delivery Log</h2>
+              <p className="section-label">Event Stream & Broker Logs</p>
+              <h2>Asynchronous Message Bus</h2>
             </div>
           </div>
 
           <div className="timeline">
             {notifications.length ? (
               notifications.map((notification) => (
-                <article className="timeline-item" key={notification.id}>
+                <article className="timeline-item" style={{ borderLeftColor: "rgba(127, 0, 255, 0.8)" }} key={notification.id}>
                   <div>
-                    <strong>{notification.recipient}</strong>
-                    <p className="muted">{notification.message}</p>
+                    <strong style={{ color: "#ffffff" }}>{notification.recipient}</strong>
+                    <p className="muted" style={{ fontSize: "0.85rem", margin: "4px 0 0" }}>{notification.message}</p>
                   </div>
                   <div className="timeline-meta">
-                    <span>{notification.channel}</span>
-                    <strong>{notification.status}</strong>
+                    <span style={{ color: "#c084fc" }}>{notification.channel}</span>
+                    <br />
+                    <strong style={{ fontSize: "0.8rem", color: "#94a3b8" }}>{notification.status}</strong>
                   </div>
                 </article>
               ))
             ) : (
-              <p className="empty-copy">Notifications appear after a successful mock payment.</p>
+              <p className="empty-copy">Awaiting dynamic intercept triggers from payment services.</p>
             )}
           </div>
         </section>
@@ -412,5 +416,3 @@ export default function HomePage() {
     </main>
   );
 }
-
-
