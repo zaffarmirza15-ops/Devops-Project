@@ -3,9 +3,9 @@
 import { startTransition, useEffect, useMemo, useState } from "react";
 
 const defaultCheckout = {
-  customerName: "Gulraeez Gulshan",
-  customerEmail: "gulraizgulshan@gmail.com",
-  paymentMethod: "card"
+  customerName: "Zaffar King",
+  customerEmail: "zaffardon@gmail.com",
+  paymentMethod: "Gpay"
 };
 
 function formatCurrency(amountInCents) {
